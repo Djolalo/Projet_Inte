@@ -28,6 +28,9 @@ public class GenerationProcedurale : MonoBehaviour
             Generation();
     }
 
+    /**
+     * Creates and renders the map
+     */
     void Generation(){
         seed = Random.Range(-10000, 10000);
         groundTilemap.ClearAllTiles();
@@ -36,6 +39,9 @@ public class GenerationProcedurale : MonoBehaviour
         RenderMap(map,groundTilemap,caveTilemap ,groundTile, caveTile);
     }
 
+    /**
+     * Generates an array filled with zeros
+     */
     public int[,] GenerateArray(int width, int height, bool empty){
         int [,] map = new int[width, height];
         for(int x=0; x<width; x++){
@@ -46,6 +52,11 @@ public class GenerationProcedurale : MonoBehaviour
         return map;
     }
 
+    /**
+     * Fills the map with random values using perlin noise
+     * <paramref name="map" type="int[,]"/>
+     * <returns>map</returns>
+     */
     public int[,] TerrainGeneration(int[,] map){
         int perlinHeight;
         for(int x=0; x<width;x++){
@@ -59,19 +70,26 @@ public class GenerationProcedurale : MonoBehaviour
         }
         return map;
     }
+
+    /**
+     * Sets the tiles into the map according to the number in each cell
+     */
     public void RenderMap(int [,] map, Tilemap groundTileMap, Tilemap caveTilemap, TileBase groundTilebase, TileBase caveTilebase){
         for(int x=0; x<width; x++){
             for (int y=0; y<height; y++){
                 if(map[x,y]==1){
                     groundTileMap.SetTile(new Vector3Int(x,y,0),groundTilebase);
                 }
-                else if (map[x, y] == 2)
-                {
+                else if (map[x, y] == 2){
                     caveTilemap.SetTile(new Vector3Int(x, y, 0),caveTilebase);
                 }
             }
         }
     }
+
+    /**
+     * Unsets all the tiles
+     */
     void clearMap()
     {
         groundTilemap.ClearAllTiles();
