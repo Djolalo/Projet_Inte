@@ -61,12 +61,14 @@ public class GenerationProcedurale : MonoBehaviour
             perlinHeight +=height/2;
             for(int y = 0; y<perlinHeight; y++){
                 int caveValue = Mathf.RoundToInt(countEnum*Mathf.PerlinNoise((x * modifier) + seed, (y * modifier) + seed));
+
                 map[x,y] = (caveValue==1)?textureTypes.PIERRE :textureTypes.TERRE ;
             }
         }
         return map;
     }
     public void RenderMap(textureTypes [,] map, Tilemap groundTileMap, Tilemap caveTilemap, TileBase rockTilebase,TileBase groundTilebase, TileBase caveTilebase){
+
         for(int x=0; x<width; x++){
             for (int y=0; y<height; y++){
                 switch (map[x, y])
@@ -79,6 +81,7 @@ public class GenerationProcedurale : MonoBehaviour
                         break;
                     case textureTypes.PIERRE:
                         groundTileMap.SetTile(new Vector3Int(x,y,0), rockTilebase);
+
                         break;
                     default: break;
                 }
