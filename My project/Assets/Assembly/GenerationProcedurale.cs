@@ -3,6 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
+public enum textureTypes :short
+{ 
+    CIEL = 0, 
+    TERRE = 1,
+    PIERRE = 2,
+    SABLE = 3,
+    OR = 5,
+    FER = 4 
+}
+
 public class GenerationProcedurale : MonoBehaviour
 {
     [SerializeField] int width, height;
@@ -14,12 +24,10 @@ public class GenerationProcedurale : MonoBehaviour
     [Header("Caves")]
     [SerializeField] float modifier;
 
-    int [,] map;
+    
+    textureTypes [,] map;
     // Start is called before the first frame update
-    void Start()
-    {
-       Generation(); 
-    }
+    void Start() => Generation();
 
     // Update is called once per frame
     void Update()
@@ -29,24 +37,23 @@ public class GenerationProcedurale : MonoBehaviour
     }
 
     void Generation(){
-        seed = Random.Range(-10000, 10000);
         groundTilemap.ClearAllTiles();
         this.map=GenerateArray(this.width,this.height,true);
         this.map=TerrainGeneration(this.map);
         RenderMap(map,groundTilemap,caveTilemap ,groundTile, caveTile);
     }
 
-    public int[,] GenerateArray(int width, int height, bool empty){
-        int [,] map = new int[width, height];
+    public textureTypes[,] GenerateArray(int width, int height, bool empty){
+        textureTypes [,] map = new textureTypes[width, height];
         for(int x=0; x<width; x++){
             for(int y= 0;y<height; y++){
-                map[x,y]= (empty) ?0:1;
+                map[x,y]= (empty) ?textureTypes.CIEL:textureTypes.TERRE;
             }
         }
         return map;
     }
 
-    public int[,] TerrainGeneration(int[,] map){
+    public textureTypes[,] TerrainGeneration(textureTypes[,] map){
         int perlinHeight;
         for(int x=0; x<width;x++){
             perlinHeight=Mathf.RoundToInt(Mathf.PerlinNoise(x/smoothness,seed)*height/2);
@@ -54,20 +61,23 @@ public class GenerationProcedurale : MonoBehaviour
             for(int y = 0; y<perlinHeight; y++){
                 //map[x,y]=1;
                 int caveValue = Mathf.RoundToInt(Mathf.PerlinNoise((x * modifier) + seed, (y * modifier) + seed));
-                map[x,y] = (caveValue==1)?2:1 ;
+                map[x,y] = (caveValue==1)?textureTypes.PIERRE :textureTypes.TERRE ;
             }
         }
         return map;
     }
-    public void RenderMap(int [,] map, Tilemap groundTileMap, Tilemap caveTilemap, TileBase groundTilebase, TileBase caveTilebase){
+    public void RenderMap(textureTypes [,] map, Tilemap groundTileMap, Tilemap caveTilemap, TileBase groundTilebase, TileBase caveTilebase){
         for(int x=0; x<width; x++){
             for (int y=0; y<height; y++){
-                if(map[x,y]==1){
-                    groundTileMap.SetTile(new Vector3Int(x,y,0),groundTilebase);
-                }
-                else if (map[x, y] == 2)
+                switch (map[x, y])
                 {
-                    caveTilemap.SetTile(new Vector3Int(x, y, 0),caveTilebase);
+                    case textureTypes.TERRE:
+                        groundTileMap.SetTile(new Vector3Int(x, y, 0), groundTilebase);
+                        break;
+                    case textureTypes.PIERRE:
+                        groundTileMap.SetTile(new Vector3Int(x, y, 0), caveTilebase);
+                        break;
+                    default: break;
                 }
             }
         }
