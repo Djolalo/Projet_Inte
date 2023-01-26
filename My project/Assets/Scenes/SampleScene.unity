@@ -374,14 +374,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   width: 500
-  height: 100
-  smoothness: 85
+  height: 500
+  smoothness: 95.6
   seed: 0
   groundTile: {fileID: 11400000, guid: 35efb5c6263a94740b82bc3c114e7133, type: 2}
   caveTile: {fileID: 11400000, guid: d4801f5099852ef45b0f9edbb99de53c, type: 2}
+  rockTile: {fileID: 11400000, guid: 3518f19f86760cd4c9dd94436ae06993, type: 2}
   groundTilemap: {fileID: 1585846598}
   caveTilemap: {fileID: 1525452420}
-  modifier: 0.19
+  modifier: 0.1
 --- !u!4 &930725417
 Transform:
   m_ObjectHideFlags: 0
