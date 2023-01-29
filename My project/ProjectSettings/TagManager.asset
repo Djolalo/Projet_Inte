@@ -41,3 +41,12 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Murs
+    uniqueID: 2624167187
+    locked: 0
+  - name: Blocs
+    uniqueID: 4060944187
+    locked: 0
+  - name: Joueur
+    uniqueID: 3033904333
+    locked: 0

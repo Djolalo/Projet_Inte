@@ -21,7 +21,7 @@ public class GenerationProcedurale : MonoBehaviour
     [SerializeField] int width, height;
     [SerializeField] float smoothness;
     [SerializeField] float seed;
-    [SerializeField] TileBase groundTile, caveTile, rockTile;
+    [SerializeField] TileBase groundTile, caveTile, rockTile, skyTile;
     [SerializeField] Tilemap groundTilemap,caveTilemap;
 
     [Header("Caves")]
@@ -47,7 +47,7 @@ public class GenerationProcedurale : MonoBehaviour
         this.map=GenerateArray(this.width,this.height,true);
         this.map=TerrainGeneration(this.map);
         this.map=ajoutPierres(this.map);
-        RenderMap(map,groundTilemap,caveTilemap ,rockTile,groundTile, caveTile);
+        RenderMap(map,groundTilemap,caveTilemap ,rockTile,groundTile, caveTile,skyTile);
     }
 
     public textureTypes[,] GenerateArray(int width, int height, bool empty){
@@ -75,29 +75,53 @@ public class GenerationProcedurale : MonoBehaviour
     public textureTypes[,] ajoutPierres(textureTypes[,] map)
     {
         int perlinHeight; int countEnum = (textureTypes.GetValues(typeof(textureTypes)).Length / 2) + 1; float decalage = 0.3F;
-        float binoM; 
+        float binoM;
         for (int x = 0; x < width; x++)
         {
+            float caveNoise = Mathf.RoundToInt(Mathf.PerlinNoise(x / (smoothness / 4), seed) * 50);
             perlinHeight = Mathf.RoundToInt(Mathf.PerlinNoise(x / smoothness, seed) * height / 2);
             perlinHeight += height / 2;
+            float underGroundTH = (height / 4) + caveNoise;
             for (int y = 0; y < perlinHeight; y++)
             {
+                float coefAvenir = (Mathf.PerlinNoise((x*modifier+seed)*0.75F, (y*modifier+seed) * 0.75F));
+                UnityEngine.Debug.Log(coefAvenir);
                 if (map[x, y] == textureTypes.TERRE)
                 {
-                    binoM = (float)(perlinHeight / (perlinHeight - y));
-                    float caveValue = (decalage+binoM)*  Mathf.PerlinNoise((x * modifier) + seed, (y * modifier) + seed);
-                    map[x, y] = ((caveValue<0.6)) ? textureTypes.PIERRE: textureTypes.TERRE ;
+                    if (underGroundTH > y)
+                    {
+                        if (coefAvenir > 0.3)
+                        {
+                            map[x, y] = textureTypes.PIERRE;
+                        }
+                        else
+                        {
+                            map[x, y] = textureTypes.TERRE;
+                        }
+                    }
+                    else
+                    {
+                        if ((coefAvenir<0.3))
+                            map[x, y] = textureTypes.PIERRE;
+                        else
+                        {
+                            map[x, y] = textureTypes.TERRE;
+                        }
+                    }            
                 }
             }
         }
         return map;
     }
-    public void RenderMap(textureTypes [,] map, Tilemap groundTileMap, Tilemap caveTilemap, TileBase rockTilebase,TileBase groundTilebase, TileBase caveTilebase){
+    public void RenderMap(textureTypes [,] map, Tilemap groundTileMap, Tilemap caveTilemap, TileBase rockTilebase,TileBase groundTilebase, TileBase caveTilebase, TileBase skyTilebase){
 
         for(int x=0; x<width; x++){
             for (int y=0; y<height; y++){
                 switch (map[x, y])
                 {
+                    case textureTypes.CIEL:
+                        caveTilemap.SetTile(new Vector3Int(x, y, 0), skyTilebase);
+                        break;
                     case textureTypes.TERRE:
                         groundTileMap.SetTile(new Vector3Int(x, y, 0), groundTilebase);
                         break;

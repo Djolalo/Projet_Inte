@@ -265,8 +265,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -1261062963
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: 182422651, guid: 1e03e39153bce154b9f0e96809681850, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -375,11 +375,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   width: 500
   height: 500
-  smoothness: 95.6
+  smoothness: 200
   seed: 0
   groundTile: {fileID: 11400000, guid: 35efb5c6263a94740b82bc3c114e7133, type: 2}
   caveTile: {fileID: 11400000, guid: d4801f5099852ef45b0f9edbb99de53c, type: 2}
   rockTile: {fileID: 11400000, guid: 3518f19f86760cd4c9dd94436ae06993, type: 2}
+  skyTile: {fileID: 11400000, guid: 7a126cf3ed2d3ba4685739ba5ccbe039, type: 2}
   groundTilemap: {fileID: 1585846598}
   caveTilemap: {fileID: 1525452420}
   modifier: 0.1
@@ -469,8 +470,8 @@ TilemapRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -1670800109
+  m_SortingLayer: 1
   m_SortingOrder: 0
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
@@ -590,8 +591,8 @@ TilemapRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -234023109
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
