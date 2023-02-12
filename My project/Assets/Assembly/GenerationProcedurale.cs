@@ -84,7 +84,7 @@ public class GenerationProcedurale : MonoBehaviour
     }
     public textureTypes[,] ajoutPierres(textureTypes[,] map)
     {
-        int perlinHeight; int countEnum = (textureTypes.GetValues(typeof(textureTypes)).Length / 2) + 1;
+        int perlinHeight;
         for (int x = 0; x < width; x++)
         {
             float caveNoise = Mathf.RoundToInt(Mathf.PerlinNoise(x / (smoothness / 4), seed) * 50);
@@ -106,23 +106,35 @@ public class GenerationProcedurale : MonoBehaviour
     public textureTypes[,] generateTree(textureTypes[,] map, int angle, int largeur, int longueur, float reduction, int nbRecursion)
     {
         float newAngle = (float)angle * 0.001745F;
+
+        //tree spawns in the middle of the map
         int milieu = this.width / 2;
-        int hauteur = Mathf.RoundToInt(Mathf.PerlinNoise(milieu / smoothness, seed) * height/2);
+
+        //same calculation as above to get the surface height in the middle of the map
+        int hauteur = Mathf.RoundToInt(Mathf.PerlinNoise(milieu / smoothness, seed) * height/2) + height /2;
+
         int x = milieu; int y = hauteur;
-        int hauteurMax = hauteur + longueur; 
+
+        //max height of the tree
+        int hauteurMax = hauteur + longueur;
+
+        //tracing the trunk
         while (x < (milieu + largeur))
         {
             y = hauteur;
             while(y < hauteurMax)
             {
-                UnityEngine.Debug.Log("X est en position : "+x+", y : " + y);
                 map[x, y] = textureTypes.BOIS;
                 y++;
             }
             x++;
         }
+
+        //reduction : float number that reduces at each iteration so that the tree branches get smaller
         largeur = (int)((float)largeur * reduction);
         longueur = (int)((float)longueur * reduction);
+
+        //nbRecursion == 0 is the end of recursivity condition
         nbRecursion--;
         float oppositeAngle = (1.57f - (1.57f - newAngle));
         map = leftTreeRecursion(map, oppositeAngle,largeur,longueur, reduction, nbRecursion , milieu, y);
@@ -132,6 +144,8 @@ public class GenerationProcedurale : MonoBehaviour
     public textureTypes[,] leftTreeRecursion(textureTypes[,] map, float angle, int largeur, int longueur, float reductionValue, int nbRecursion, int startingX, int startingY)
     {
         UnityEngine.Debug.Log("<color=green> On part à gauche! </color>");
+
+        //put leaves at the end of branches
         if (nbRecursion == 0)
         {
             map[startingX, startingY + 1] = textureTypes.FEUILLE;
@@ -141,7 +155,10 @@ public class GenerationProcedurale : MonoBehaviour
             map[startingX - 1, startingY] = textureTypes.FEUILLE;
             return map;
         }
-        int pasX; int startY = startingY;
+
+
+        int pasX;
+        int startY = startingY;
         int pasY= (int)(startingY * Mathf.Sin(angle));
         startingY += pasY;
         UnityEngine.Debug.Log(" X : " + startingX + "Y = " + startingY + " - " + pasY + " point de départ: "+startY);
