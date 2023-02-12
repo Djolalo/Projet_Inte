@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using System.IO;
 
-public enum textureTypes :short
+public enum textureTypes : short
 { 
     CIEL = 0, 
     CAVERNE =2,
@@ -26,21 +27,33 @@ public class GenerationProcedurale : MonoBehaviour
 
     [Header("Caves")]
     [SerializeField] float modifier;
+    private string path = "Assets/Scripts/map.txt";
 
     
     textureTypes [,] map;
-    // Start is called before the first frame update
-    void Start() => Generation();
 
-    // Update is called once per frame
-    void Update()
+    // Start is called before the first frame update
+     void Start()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        bool result = File.Exists(this.path);
+
+        if(result)
         {
+            UnityEngine.Debug.LogWarning("File Found");
+            string read = File.ReadAllText(this.path);
+            UnityEngine.Debug.LogWarning(read);
             this.seed = UnityEngine.Random.Range(-10000, 10000);
             Generation();
         }
+        else{
+
+            UnityEngine.Debug.LogWarning("File not found");
+            this.seed = UnityEngine.Random.Range(-10000, 10000);
+            Generation();
+            saveMap();
+        }
     }
+
 
     void Generation(){
         groundTilemap.ClearAllTiles();
@@ -60,6 +73,19 @@ public class GenerationProcedurale : MonoBehaviour
         return map;
     }
 
+    public void saveMap(){
+
+        int data;
+        
+        for(int x=0; x<width; x++){
+            for(int y= 0;y<height; y++) {
+                data = (int)map[x,y];
+                System.IO.File.WriteAllText(this.path, "data");
+            }
+        }
+
+    }
+
     public textureTypes[,] TerrainGeneration(textureTypes[,] map){
         int perlinHeight; 
         for(int x=0; x<width;x++){
@@ -72,6 +98,7 @@ public class GenerationProcedurale : MonoBehaviour
         }
         return map;
     }
+
     public textureTypes[,] ajoutPierres(textureTypes[,] map)
     {
         int perlinHeight; int countEnum = (textureTypes.GetValues(typeof(textureTypes)).Length / 2) + 1; float decalage = 0.3F;
@@ -113,6 +140,7 @@ public class GenerationProcedurale : MonoBehaviour
         }
         return map;
     }
+
     public void RenderMap(textureTypes [,] map, Tilemap groundTileMap, Tilemap caveTilemap, TileBase rockTilebase,TileBase groundTilebase, TileBase caveTilebase, TileBase skyTilebase){
 
         for(int x=0; x<width; x++){
@@ -136,6 +164,7 @@ public class GenerationProcedurale : MonoBehaviour
             }
         }
     }
+
     void clearMap()
     {
         groundTilemap.ClearAllTiles();

@@ -4,9 +4,10 @@ MonoImporter:
   externalObjects: {}
   serializedVersion: 2
   defaultReferences:
-  - groundTile: {instanceID: 0}
+  - groundTile: {fileID: 11400000, guid: 35efb5c6263a94740b82bc3c114e7133, type: 2}
   - caveTile: {instanceID: 0}
   - rockTile: {fileID: 11400000, guid: 3518f19f86760cd4c9dd94436ae06993, type: 2}
+  - skyTile: {instanceID: 0}
   - groundTilemap: {instanceID: 0}
   - caveTilemap: {instanceID: 0}
   executionOrder: 0
