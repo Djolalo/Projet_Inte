@@ -381,6 +381,8 @@ MonoBehaviour:
   caveTile: {fileID: 11400000, guid: d4801f5099852ef45b0f9edbb99de53c, type: 2}
   rockTile: {fileID: 11400000, guid: 3518f19f86760cd4c9dd94436ae06993, type: 2}
   skyTile: {fileID: 11400000, guid: 7a126cf3ed2d3ba4685739ba5ccbe039, type: 2}
+  treeTile: {fileID: 11400000, guid: 935490bb3dae04d4f9522902c8c82d07, type: 2}
+  leaveTile: {fileID: 11400000, guid: 6f3bfb844d6860d4fbd183458cd43d93, type: 2}
   groundTilemap: {fileID: 1585846598}
   caveTilemap: {fileID: 1525452420}
   modifier: 0.1
