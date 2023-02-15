@@ -50,7 +50,7 @@ public class GenerationProcedurale : MonoBehaviour
         this.map = GenerateArray(this.width, this.height, true);
         TerrainGeneration();
         ajoutPierres();
-        generateTree(120, 3, 5, 0.9F, 12);
+        generateTree(180, 3, 8, 1.0f, 12);
         RenderMap(map, groundTilemap, caveTilemap, rockTile, groundTile, caveTile, skyTile, treeTile, leaveTile);
     }
 
@@ -119,7 +119,7 @@ public class GenerationProcedurale : MonoBehaviour
         while (x < (milieu + largeur))
         {
             y = hauteur;
-            while(y < hauteurMax)
+            while(y < hauteurMax*height/nbRecursion)
             {
                 map[x, y] = textureTypes.BOIS;
                 y++;
@@ -157,8 +157,10 @@ public class GenerationProcedurale : MonoBehaviour
             sX = (float)startingX;
             sY = (float)startingY;
             UnityEngine.Debug.Log("Coordonnées de départ : x" + sX + ", y " + sY + " Coordonnées d'arrivée : x " + finalX + ", y " + finalY);
-
-            bresenhamGeneral(sX,finalX,sY,finalY);
+            for (int i = 0; i < largeur; i++)
+            {
+                bresenhamGeneral(sX-i, finalX-i, sY, finalY);
+            }
             largeur = (int)(largeur * reductionValue);
             longueur = (int)(longueur * reductionValue);
             nbRecursion--;
@@ -190,7 +192,10 @@ public class GenerationProcedurale : MonoBehaviour
             sX = (float)startingX;
             sY = (float)startingY;
             UnityEngine.Debug.Log("Coordonnées de départ : x" + sX + ", y " + sY + " Coordonnées d'arrivée : x " + finalX + ", y " + finalY);
-            bresenhamGeneral(sX , finalX , sY, finalY);
+            for (int i = 0; i < largeur; i++)
+            {
+                bresenhamGeneral(sX + i, finalX + i, sY, finalY);
+            }
             largeur = (int)(largeur * reductionValue);
             longueur = (int)(longueur * reductionValue);
             nbRecursion--;
