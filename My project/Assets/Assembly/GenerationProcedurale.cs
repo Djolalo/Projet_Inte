@@ -50,7 +50,7 @@ public class GenerationProcedurale : MonoBehaviour
         this.map = GenerateArray(this.width, this.height, true);
         TerrainGeneration();
         ajoutPierres();
-        generateTree(90, 3, 25, 0.9F, 4);
+        generateTree(120, 3, 5, 0.9F, 12);
         RenderMap(map, groundTilemap, caveTilemap, rockTile, groundTile, caveTile, skyTile, treeTile, leaveTile);
     }
 
@@ -138,8 +138,6 @@ public class GenerationProcedurale : MonoBehaviour
     }
     public void leftTreeRecursion(float currentAngle, int largeur, int longueur, float reductionValue, int nbRecursion, int startingX, int startingY, float rotationAngle)
     {
-        UnityEngine.Debug.Log("<color=green> On part à gauche! </color>");
-
         //put leaves at the end of branches
         if (nbRecursion == 0)
         {
@@ -154,8 +152,8 @@ public class GenerationProcedurale : MonoBehaviour
         if (nbRecursion >= 1)
         {
             float sX, sY; int x, y;
-            float finalX = (float)longueur * Mathf.Sin(currentAngle) + (float)startingX;
-            float finalY = (float)longueur * Mathf.Cos(currentAngle) + (float)startingY;
+            float finalY = (float)longueur * Mathf.Sin(currentAngle) + (float)startingY;
+            float finalX = (float)longueur * Mathf.Cos(currentAngle) + (float)startingX;
             sX = (float)startingX;
             sY = (float)startingY;
             UnityEngine.Debug.Log("Coordonnées de départ : x" + sX + ", y " + sY + " Coordonnées d'arrivée : x " + finalX + ", y " + finalY);
@@ -187,16 +185,12 @@ public class GenerationProcedurale : MonoBehaviour
         if (nbRecursion >= 1)
         {
             float sX, sY; int x, y;
-            float finalX = (float)longueur * Mathf.Sin(currentAngle) + (float)startingX;
-            float finalY = (float)longueur* Mathf.Cos(currentAngle) + (float)startingY;
+            float finalY = (float)longueur * Mathf.Sin(currentAngle) + (float)startingY;
+            float finalX = (float)longueur* Mathf.Cos(currentAngle) + (float)startingX;
             sX = (float)startingX;
             sY = (float)startingY;
             UnityEngine.Debug.Log("Coordonnées de départ : x" + sX + ", y " + sY + " Coordonnées d'arrivée : x " + finalX + ", y " + finalY);
-
-            for (int i = 0; i < finalY - startingY; i++)
-            {
-                bresenhamGeneral(sX + i, finalX + i, sY, finalY);
-            }
+            bresenhamGeneral(sX , finalX , sY, finalY);
             largeur = (int)(largeur * reductionValue);
             longueur = (int)(longueur * reductionValue);
             nbRecursion--;
@@ -265,12 +259,12 @@ public class GenerationProcedurale : MonoBehaviour
         }
         if (dx >= dy)
         {
-            bresenham(x1, x2, y1, y2, Incrx, Incry, dx, dy, false);
+            bresenham(x1, x2, y1, y2, Incrx, Incry, dx, dy, true);
         }
         else
         {
 
-            bresenham(y1, y2, x1, x2, Incry, Incrx, dy, dx, true);
+            bresenham(y1, y2, x1, x2, Incry, Incrx, dy, dx, false);
         }
     }
     public void RenderMap(textureTypes[,] map, Tilemap groundTileMap, Tilemap caveTilemap, TileBase rockTilebase, TileBase groundTilebase, TileBase caveTilebase, TileBase skyTilebase, TileBase woodTile, TileBase leaveTile)
