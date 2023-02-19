@@ -50,7 +50,7 @@ public class GenerationProcedurale : MonoBehaviour
         this.map = GenerateArray(this.width, this.height, true);
         TerrainGeneration();
         ajoutPierres();
-        generateTree(180, 3, 8, 1.0f, 12);
+        generateTree((int)seed, 1, 4, 1.0f, 15);
         RenderMap(map, groundTilemap, caveTilemap, rockTile, groundTile, caveTile, skyTile, treeTile, leaveTile);
     }
 
@@ -113,13 +113,13 @@ public class GenerationProcedurale : MonoBehaviour
         int x = milieu; int y = hauteur;
 
         //max height of the tree
-        int hauteurMax = hauteur + longueur;
+        int hauteurMax = hauteur + longueur*nbRecursion;
 
         //tracing the trunk
         while (x < (milieu + largeur))
         {
             y = hauteur;
-            while(y < hauteurMax*height/nbRecursion)
+            while(y < hauteurMax)
             {
                 map[x, y] = textureTypes.BOIS;
                 y++;
