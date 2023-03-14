@@ -70,17 +70,20 @@ public class GenerationProcedurale : MonoBehaviour
     public void TerrainGeneration()
     {
         int perlinHeight;
-        for (int x = 0; x < width; x++)
+        for (int i = 0; i < width * height; i++)
         {
+            int x = i % width;
+            int y = i / width;
             perlinHeight = Mathf.RoundToInt(Mathf.PerlinNoise(x / smoothness, seed) * height / 2);
             perlinHeight += height / 2;
-            for (int y = 0; y < perlinHeight; y++)
+            if (y < perlinHeight)
             {
                 float caveValue = Mathf.PerlinNoise((x * modifier) + seed, (y * modifier) + seed);
-                this.map[x, y] = (caveValue > 0.60) ? textureTypes.CAVERNE : textureTypes.TERRE;
+                map[x, y] = (caveValue > 0.60) ? textureTypes.CAVERNE : textureTypes.TERRE;
             }
         }
     }
+
     public void ajoutPierres()
     {
         int perlinHeight;
