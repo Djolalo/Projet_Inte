@@ -63,7 +63,7 @@ public class GenerationProcedurale : MonoBehaviour
         //ajoutPierres();
         //generateTree((int)seed, 1, 4, 1.0f, 15);
         //UnityEngine.Debug.Log(maptoString());
-        stringToMap(ReadMap(), 120, 200);
+        map = stringToMap(ReadMap(), 120, 200);
         RenderMap(map, groundTilemap, caveTilemap, rockTile, groundTile, caveTile, skyTile, treeTile, leaveTile);
     }
 
@@ -364,9 +364,9 @@ public class GenerationProcedurale : MonoBehaviour
     /// <param name="leaveTile"></param>
     public void RenderMap(textureTypes[,] map, Tilemap groundTileMap, Tilemap caveTilemap, TileBase rockTilebase, TileBase groundTilebase, TileBase caveTilebase, TileBase skyTilebase, TileBase woodTile, TileBase leaveTile)
     {
-        for (int x = 0; x < width; x++)
+        for (int x = 0; x < map.GetLength(0); x++)
         {
-            for (int y = 0; y < height; y++)
+            for (int y = 0; y < map.GetLength(1); y++)
             {
                 switch (map[x, y])
                 {
@@ -413,7 +413,7 @@ public class GenerationProcedurale : MonoBehaviour
             for (int j = startX; j < numCols && j<endX; j++)
             {
                 UnityEngine.Debug.Log(cols[j]+"\n"+i+","+j);
-                chunk[(i-startX), (j-startY)] = (textureTypes)Enum.Parse(typeof(textureTypes), cols[j]);
+                chunk[(i-startY), (j-startX)] = (textureTypes)Enum.Parse(typeof(textureTypes), cols[j]);
             }
         }
         return chunk;
