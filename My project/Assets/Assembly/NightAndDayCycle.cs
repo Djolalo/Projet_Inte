@@ -14,7 +14,7 @@ public class NightAndDayCycle : MonoBehaviour
     private float time = 50;
     private bool canChangeDay = true;
     
-
+    //you can add this in another script like something that grows crops during the night
     public delegate void OnDayChanged();
 
     public OnDayChanged DayChanged;
@@ -33,14 +33,14 @@ public class NightAndDayCycle : MonoBehaviour
             time = 0;
         }
 
-        if( (int) time == maxTime/2 && canChangeDay)
+        if( ((int) time == maxTime/2) && canChangeDay)
         {
             canChangeDay = false;
             if(DayChanged!= null) { DayChanged(); }
             days++;
         }
 
-        if( (int) time == maxTime/2 + 2) canChangeDay = true;
+        if( (int) time == maxTime/2 + 5) canChangeDay = true;
 
         time += Time.deltaTime;
 
