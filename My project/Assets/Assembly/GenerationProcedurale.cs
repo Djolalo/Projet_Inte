@@ -9,6 +9,9 @@ using UnityEngine.Windows;
 using System.IO.Compression;
 using System.IO;
 using System.Linq;
+using static System.Net.Mime.MediaTypeNames;
+using System.Web;
+using System.Threading.Tasks;
 
 public enum textureTypes : short
 {
@@ -25,17 +28,18 @@ public enum textureTypes : short
 
 public class GenerationProcedurale : MonoBehaviour
 {
+    [Header("World Info")]
     [SerializeField] int width, height;
     [SerializeField] float smoothness;
     [SerializeField] float seed;
     [SerializeField] TileBase groundTile, caveTile, rockTile, skyTile, treeTile, leaveTile;
     [SerializeField] Tilemap groundTilemap, caveTilemap;
-
+    [SerializeField] string worldname;
     [Header("Caves")]
     [SerializeField] float modifier;
     //chunkSize here concerns height; width is considered to be 4 times width.
     int chunkSize = 40;
-
+    int count = 40;
     textureTypes[,] map;
     textureTypes[,] chunk;
     // Start is called before the first frame update
@@ -49,21 +53,29 @@ public class GenerationProcedurale : MonoBehaviour
             this.seed = UnityEngine.Random.Range(-10000, 10000);
             Generation();
         }
-        if (UnityEngine.Input.GetKeyDown(KeyCode.S))
+        if (UnityEngine.Input.GetKeyDown(KeyCode.Y) && count == 40)
         {
+            count++;
             SaveMap();
+        }
+        if (UnityEngine.Input.GetKeyDown(KeyCode.R))
+        {
+            stringtoWholemap(ReadMap());
+        }
+        if (UnityEngine.Input.GetKeyDown(KeyCode.C))
+        {
+            clearMap();
         }
     }
 
     void Generation()
     {
-        //groundTilemap.ClearAllTiles();
-        //this.map = GenerateArray(this.width, this.height, true);
-        //TerrainGeneration();
-        //ajoutPierres();
-        //generateTree((int)seed, 1, 4, 1.0f, 15);
-        //UnityEngine.Debug.Log(maptoString());
-        map = stringToMap(ReadMap(), 120, 200);
+        groundTilemap.ClearAllTiles();
+        this.map = GenerateArray(this.width, this.height, true);
+        TerrainGeneration();
+        ajoutPierres();
+        generateTree((int)seed, 1, 4, 1.0f, 15);
+        SaveMap();
         RenderMap(map, groundTilemap, caveTilemap, rockTile, groundTile, caveTile, skyTile, treeTile, leaveTile);
     }
 
@@ -132,18 +144,18 @@ public class GenerationProcedurale : MonoBehaviour
         int milieu = this.width / 2;
 
         //same calculation as above to get the surface height in the middle of the map
-        int hauteur = Mathf.RoundToInt(Mathf.PerlinNoise(milieu / smoothness, seed) * height/2) + height /2;
+        int hauteur = Mathf.RoundToInt(Mathf.PerlinNoise(milieu / smoothness, seed) * height / 2) + height / 2;
 
         int x = milieu; int y = hauteur;
 
         //max height of the tree
-        int hauteurMax = hauteur + longueur*nbRecursion;
+        int hauteurMax = hauteur + longueur * nbRecursion;
 
         //tracing the trunk
         while (x < (milieu + largeur))
         {
             y = hauteur;
-            while(y < hauteurMax)
+            while (y < hauteurMax)
             {
                 map[x, y] = textureTypes.BOIS;
                 y++;
@@ -157,7 +169,7 @@ public class GenerationProcedurale : MonoBehaviour
 
         //nbRecursion == 0 is the end of recursivity condition
         nbRecursion--;
-        leftTreeRecursion(1.57f + newAngle,largeur,longueur, reduction, nbRecursion , milieu, y, newAngle);
+        leftTreeRecursion(1.57f + newAngle, largeur, longueur, reduction, nbRecursion, milieu, y, newAngle);
         rightTreeRecursion(1.57f - newAngle, largeur, longueur, reduction, nbRecursion, milieu, y, newAngle);
     }
     /// <summary>
@@ -195,7 +207,7 @@ public class GenerationProcedurale : MonoBehaviour
             sY = (float)startingY;
             for (int i = 0; i < largeur; i++)
             {
-                bresenhamGeneral(sX-i, finalX-i, sY, finalY);
+                bresenhamGeneral(sX - i, finalX - i, sY, finalY);
             }
             largeur = (int)(largeur * reductionValue);
             longueur = (int)(longueur * reductionValue);
@@ -235,7 +247,7 @@ public class GenerationProcedurale : MonoBehaviour
         {
             float sX, sY; int x, y;
             float finalY = (float)longueur * Mathf.Sin(currentAngle) + (float)startingY;
-            float finalX = (float)longueur* Mathf.Cos(currentAngle) + (float)startingX;
+            float finalX = (float)longueur * Mathf.Cos(currentAngle) + (float)startingX;
             sX = (float)startingX;
             sY = (float)startingY;
             for (int i = 0; i < largeur; i++)
@@ -276,7 +288,7 @@ public class GenerationProcedurale : MonoBehaviour
             abcisse = (int)(x);
             ordonnee = (int)(y);
             if (inversion) map[abcisse, ordonnee] = textureTypes.BOIS;
-            else map[ordonnee, abcisse]= textureTypes.BOIS;
+            else map[ordonnee, abcisse] = textureTypes.BOIS;
             if (dp <= 0)
             {
                 dp += IncreE;
@@ -332,9 +344,9 @@ public class GenerationProcedurale : MonoBehaviour
     }
 
 
-    public String maptoString()
+    public string maptoString()
     {
-        string serializedMatrix = "";
+        StringBuilder builder = new StringBuilder();
         int rows = this.map.GetLength(0);
         int cols = this.map.GetLength(1);
 
@@ -342,14 +354,17 @@ public class GenerationProcedurale : MonoBehaviour
         {
             for (int j = 0; j < cols; j++)
             {
-                serializedMatrix += $"{(int)this.map[i, j]}|";
+                builder.Append((int)this.map[i, j]);
+                builder.Append('|');
             }
-            serializedMatrix = serializedMatrix.Remove(serializedMatrix.Length - 1); // Retirer le dernier '|'
-            serializedMatrix += ";";
+            builder.Remove(builder.Length - 1, 1); // Retirer le dernier '|'
+            builder.Append(';');
         }
-        serializedMatrix = serializedMatrix.Remove(serializedMatrix.Length - 1); // Retirer le dernier ';'
-        return serializedMatrix;
+        builder.Remove(builder.Length - 1, 1); // Retirer le dernier ';'
+
+        return builder.ToString();
     }
+
     /// <summary>
     /// Map Renderer
     /// </summary>
@@ -383,13 +398,32 @@ public class GenerationProcedurale : MonoBehaviour
                         groundTileMap.SetTile(new Vector3Int(x, y, 0), rockTilebase);
                         break;
                     case textureTypes.BOIS:
-                        groundTileMap.SetTile(new Vector3Int(x,y,0), woodTile);
+                        groundTileMap.SetTile(new Vector3Int(x, y, 0), woodTile);
                         break;
                     case textureTypes.FEUILLE:
-                        groundTileMap.SetTile(new Vector3Int(x,y,0), leaveTile);
+                        groundTileMap.SetTile(new Vector3Int(x, y, 0), leaveTile);
                         break;
                     default: break;
                 }
+            }
+        }
+    }
+    public void stringtoWholemap(string serializedMatrix)
+    {
+
+        string[] rows = serializedMatrix.Split(';');
+        int numRows = rows.Length;
+        int numCols = rows[0].Split('|').Length;
+        if (this.map == null)
+        {
+            this.map = new textureTypes[numRows, numCols];
+        }
+        for (int i = 0; i < numRows; i++)
+        {
+            string[] cols = rows[i].Split('|');
+            for (int j = 0; j < numCols; j++)
+            {
+                this.map[i, j] = (textureTypes)Enum.Parse(typeof(textureTypes), cols[j]);
             }
         }
     }
@@ -406,14 +440,12 @@ public class GenerationProcedurale : MonoBehaviour
         int numRows = rows.Length;
         int numCols = rows[0].Split('|').Length;
         this.chunk = new textureTypes[chunkHeight, chunkWidth];
-        UnityEngine.Debug.Log(numRows);
-        for (int i = startY; i < endY && i<numRows; i++)
+        for (int i = startY; i < endY && i < numRows; i++)
         {
             string[] cols = rows[i].Split('|');
-            for (int j = startX; j < numCols && j<endX; j++)
+            for (int j = startX; j < numCols && j < endX; j++)
             {
-                UnityEngine.Debug.Log(cols[j]+"\n"+i+","+j);
-                chunk[(i-startY), (j-startX)] = (textureTypes)Enum.Parse(typeof(textureTypes), cols[j]);
+                chunk[(i - startY), (j - startX)] = (textureTypes)Enum.Parse(typeof(textureTypes), cols[j]);
             }
         }
         return chunk;
@@ -422,7 +454,7 @@ public class GenerationProcedurale : MonoBehaviour
 
     public String ReadMap()
     {
-        byte[] saveData = UnityEngine.Windows.File.ReadAllBytes(Application.dataPath + "/data.txt");
+        byte[] saveData = UnityEngine.Windows.File.ReadAllBytes(UnityEngine.Application.dataPath + "/" + this.name + ".mnd");
         byte[] decompressedArray;
         using (MemoryStream memoryStream = new MemoryStream(saveData))
         {
@@ -437,9 +469,10 @@ public class GenerationProcedurale : MonoBehaviour
         }
         return Encoding.ASCII.GetString(decompressedArray);
     }
-    void SaveMap()
+    async void SaveMap()
     {
-        byte[] saveInfo = Encoding.UTF8.GetBytes(maptoString().ToCharArray());
+        byte[] saveInfo = Encoding.ASCII.GetBytes(maptoString());
+
         byte[] compressedData;
         using (MemoryStream memoryStream = new MemoryStream())
         {
@@ -449,8 +482,22 @@ public class GenerationProcedurale : MonoBehaviour
             }
             compressedData = memoryStream.ToArray();
         }
-        UnityEngine.Windows.File.WriteAllBytes(Application.dataPath + "/data.txt", compressedData);
-        UnityEngine.Debug.Log("<color=green>Saved ! </color>");
+
+        string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+        System.IO.Directory.CreateDirectory(path + "\\TerroraFiles");
+        path = path + "\\TerroraFiles";
+
+        // Write the compressed data to a file on a separate thread
+        await Task.Run(() =>
+        {
+            System.IO.File.WriteAllBytes(path + "\\" + this.worldname+".mnd", compressedData);
+        });
+
+        // Start a separate process to open a command prompt
+        await Task.Run(() =>
+        {
+            System.Diagnostics.Process.Start("CMD.exe", "I managed to save the file");
+        });
     }
     void clearMap()
     {

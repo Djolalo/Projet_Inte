@@ -385,6 +385,7 @@ MonoBehaviour:
   leaveTile: {fileID: 11400000, guid: 7556b30aac2d539419e9291fd32727ae, type: 2}
   groundTilemap: {fileID: 1585846598}
   caveTilemap: {fileID: 1525452420}
+  worldname: alatak
   modifier: 0.1
 --- !u!4 &930725417
 Transform:
