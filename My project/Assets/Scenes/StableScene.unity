@@ -578,8 +578,11 @@ MonoBehaviour:
   caveTile: {fileID: 11400000, guid: d4801f5099852ef45b0f9edbb99de53c, type: 2}
   rockTile: {fileID: 11400000, guid: 3518f19f86760cd4c9dd94436ae06993, type: 2}
   skyTile: {fileID: 11400000, guid: 7a126cf3ed2d3ba4685739ba5ccbe039, type: 2}
+  treeTile: {fileID: 0}
+  leaveTile: {fileID: 0}
   groundTilemap: {fileID: 1183983427}
   caveTilemap: {fileID: 1839468069}
+  worldname: 
   modifier: 0.1
 --- !u!4 &651083978
 Transform:
@@ -1231,7 +1234,7 @@ MonoBehaviour:
     m_Mode: 0
     m_NumColorKeys: 8
     m_NumAlphaKeys: 2
-  light: {fileID: 1412678832}
+  l: {fileID: 0}
 --- !u!114 &1412678834
 MonoBehaviour:
   m_ObjectHideFlags: 0
