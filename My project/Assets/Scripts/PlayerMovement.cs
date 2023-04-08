@@ -11,25 +11,41 @@ public class PlayerMovement : MonoBehaviour
     public bool isJumping; 
     public bool isGrounded;
 
-    public Transform checkGroundLeft;
-    public Transform checkGroundRight;
+    public Transform checkGround;
+    public float groundCheckRadius;
+    public LayerMask collisionLayers;
     
     public SpriteRenderer spriteRenderer;
+    public PlayerHealth ph;
 
     private Vector3 velocity = Vector3.zero;
+    private float MaxVelY;
 
     void Update(){
+
+        if(!isGrounded){
+            this.MaxVelY += 1;
+        }
+        else if(isGrounded){
+            if(MaxVelY > 1000 && Time.time > 2.0f){
+                int damage = (int)MaxVelY/30;
+                Debug.Log("Chute " + MaxVelY);
+                ph.TakeDamage(damage); 
+            }
+            this.MaxVelY = 0;
+        }
 
         if(Input.GetButtonDown("Jump") && isGrounded)
         {
             isJumping = true;
         }
+
     }
 
     void FixedUpdate()
     {
 
-        isGrounded = Physics2D.OverlapArea(checkGroundLeft.position, checkGroundRight.position);
+        isGrounded = Physics2D.OverlapCircle(checkGround.position, groundCheckRadius, collisionLayers);
 
         float horizontalMovement = Input.GetAxis("Horizontal") * moveSpeed * Time.deltaTime;
 
@@ -65,5 +81,11 @@ public class PlayerMovement : MonoBehaviour
         {
             spriteRenderer.flipX = true;
         }
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(checkGround.position, groundCheckRadius);
     }
 }

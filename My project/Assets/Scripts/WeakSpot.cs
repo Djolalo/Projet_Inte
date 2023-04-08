@@ -1,13 +1,14 @@
 using UnityEngine;
 
-public class PickUpObject : MonoBehaviour
+public class WeakSpot : MonoBehaviour
 {
+    public GameObject objectToDestroy;
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if(collision.CompareTag("Player"))
         {
-            Inventory.instance.AddStone(1);
-            Destroy(gameObject);
+            Destroy(objectToDestroy);
         }
     }
 }
