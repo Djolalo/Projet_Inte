@@ -2146,7 +2146,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-<<<<<<< HEAD
   m_Material: {fileID: 0}
   m_Color: {r: 0.93725497, g: 0.058823533, b: 0.11764707, a: 1}
   m_RaycastTarget: 1
@@ -2167,23 +2166,6 @@ MonoBehaviour:
   m_PixelsPerUnitMultiplier: 1
 --- !u!222 &1307868664
 CanvasRenderer:
-=======
-  width: 1000
-  height: 500
-  smoothness: 200
-  seed: 0
-  groundTile: {fileID: 11400000, guid: 35efb5c6263a94740b82bc3c114e7133, type: 2}
-  caveTile: {fileID: 11400000, guid: d4801f5099852ef45b0f9edbb99de53c, type: 2}
-  rockTile: {fileID: 11400000, guid: 3518f19f86760cd4c9dd94436ae06993, type: 2}
-  skyTile: {fileID: 11400000, guid: 7a126cf3ed2d3ba4685739ba5ccbe039, type: 2}
-  treeTile: {fileID: 11400000, guid: 5f19a56a5bd75c047a67acad75b0ddd5, type: 2}
-  leaveTile: {fileID: 11400000, guid: 7556b30aac2d539419e9291fd32727ae, type: 2}
-  groundTilemap: {fileID: 1585846598}
-  caveTilemap: {fileID: 1525452420}
-  modifier: 0.1
---- !u!4 &930725417
-Transform:
->>>>>>> main
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
