@@ -39,15 +39,12 @@ public class GenerationProcedurale : MonoBehaviour
 
         if(result)
         {
-            UnityEngine.Debug.LogWarning("File Found");
             string read = File.ReadAllText(this.path);
             UnityEngine.Debug.LogWarning(read);
             this.seed = UnityEngine.Random.Range(-10000, 10000);
             Generation();
         }
         else{
-
-            UnityEngine.Debug.LogWarning("File not found");
             this.seed = UnityEngine.Random.Range(-10000, 10000);
             Generation();
             saveMap();

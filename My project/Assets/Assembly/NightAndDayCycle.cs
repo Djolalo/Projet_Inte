@@ -8,7 +8,7 @@ public class NightAndDayCycle : MonoBehaviour
     private const int maxTime = 500;
 
     [SerializeField] private Gradient lightColor;
-    [SerializeField] private GameObject light;
+    [SerializeField] private GameObject l;
 
     private int days;
     private float time = 50;
@@ -47,7 +47,7 @@ public class NightAndDayCycle : MonoBehaviour
         /*evaluate method should get a value between 0 and 1
          *so we take the inverse of maxTime
          * */
-        light.GetComponent<UnityEngine.Rendering.Universal.Light2D>().color = lightColor.Evaluate(time / maxTime);
+        l.GetComponent<UnityEngine.Rendering.Universal.Light2D>().color = lightColor.Evaluate(time / maxTime);
     }
 
     public int getDays()
