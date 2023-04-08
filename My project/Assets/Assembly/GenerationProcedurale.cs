@@ -4,18 +4,17 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using System.IO;
 
 public enum textureTypes : short
-{
-    CIEL = 0,
-    CAVERNE = 2,
+{ 
+    CIEL = 0, 
+    CAVERNE =2,
     TERRE = 1,
     PIERRE = 3,
     SABLE = -3,
     OR = -5,
-    FER = -4,
-    BOIS = -6,
-    FEUILLE = -7
+    FER = -4 
 }
 
 public class GenerationProcedurale : MonoBehaviour
@@ -23,67 +22,87 @@ public class GenerationProcedurale : MonoBehaviour
     [SerializeField] int width, height;
     [SerializeField] float smoothness;
     [SerializeField] float seed;
-    [SerializeField] TileBase groundTile, caveTile, rockTile, skyTile, treeTile, leaveTile;
-    [SerializeField] Tilemap groundTilemap, caveTilemap;
+    [SerializeField] TileBase groundTile, caveTile, rockTile, skyTile;
+    [SerializeField] Tilemap groundTilemap,caveTilemap;
 
     [Header("Caves")]
     [SerializeField] float modifier;
+    private string path = "Assets/Scripts/map.txt";
 
+    
+    textureTypes [,] map;
 
-    textureTypes[,] map;
     // Start is called before the first frame update
-    void Start() => Generation();
-
-    // Update is called once per frame
-    void Update()
+     void Start()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        bool result = File.Exists(this.path);
+
+        if(result)
         {
+            UnityEngine.Debug.LogWarning("File Found");
+            string read = File.ReadAllText(this.path);
+            UnityEngine.Debug.LogWarning(read);
             this.seed = UnityEngine.Random.Range(-10000, 10000);
             Generation();
         }
+        else{
+
+            UnityEngine.Debug.LogWarning("File not found");
+            this.seed = UnityEngine.Random.Range(-10000, 10000);
+            Generation();
+            saveMap();
+        }
     }
 
-    void Generation()
-    {
+
+    void Generation(){
         groundTilemap.ClearAllTiles();
-        this.map = GenerateArray(this.width, this.height, true);
-        TerrainGeneration();
-        ajoutPierres();
-        generateTree((int)seed, 1, 4, 1.0f, 15);
-        RenderMap(map, groundTilemap, caveTilemap, rockTile, groundTile, caveTile, skyTile, treeTile, leaveTile);
+        this.map=GenerateArray(this.width,this.height,true);
+        this.map=TerrainGeneration(this.map);
+        this.map=ajoutPierres(this.map);
+        RenderMap(map,groundTilemap,caveTilemap ,rockTile,groundTile, caveTile,skyTile);
     }
 
-    public textureTypes[,] GenerateArray(int width, int height, bool empty)
-    {
-        textureTypes[,] map = new textureTypes[width, height];
-        for (int x = 0; x < width; x++)
-        {
-            for (int y = 0; y < height; y++)
-            {
-                map[x, y] = (empty) ? textureTypes.CIEL : textureTypes.TERRE;
+    public textureTypes[,] GenerateArray(int width, int height, bool empty){
+        textureTypes [,] map = new textureTypes[width, height];
+        for(int x=0; x<width; x++){
+            for(int y= 0;y<height; y++) {
+                map[x,y]= (empty) ?textureTypes.CIEL:textureTypes.TERRE;
             }
         }
         return map;
     }
 
-    public void TerrainGeneration()
-    {
-        int perlinHeight;
-        for (int x = 0; x < width; x++)
-        {
-            perlinHeight = Mathf.RoundToInt(Mathf.PerlinNoise(x / smoothness, seed) * height / 2);
-            perlinHeight += height / 2;
-            for (int y = 0; y < perlinHeight; y++)
-            {
-                float caveValue = Mathf.PerlinNoise((x * modifier) + seed, (y * modifier) + seed);
-                this.map[x, y] = (caveValue > 0.60) ? textureTypes.CAVERNE : textureTypes.TERRE;
+    public void saveMap(){
+
+        int data;
+        
+        for(int x=0; x<width; x++){
+            for(int y= 0;y<height; y++) {
+                data = (int)map[x,y];
+                System.IO.File.WriteAllText(this.path, "data");
             }
         }
+
     }
-    public void ajoutPierres()
+
+    public textureTypes[,] TerrainGeneration(textureTypes[,] map){
+        int perlinHeight; 
+        for(int x=0; x<width;x++){
+            perlinHeight=Mathf.RoundToInt(Mathf.PerlinNoise(x/smoothness,seed)*height/2);
+            perlinHeight +=height/2;
+            for(int y = 0; y<perlinHeight; y++){
+                float caveValue = Mathf.PerlinNoise((x * modifier) + seed, (y * modifier) + seed);
+                map[x,y] = (caveValue>0.60)?textureTypes.CAVERNE :textureTypes.TERRE ;
+            }
+        }
+        return map;
+    }
+
+    public textureTypes[,] ajoutPierres(textureTypes[,] map)
     {
-        int perlinHeight;
+        int perlinHeight; int countEnum = (textureTypes.GetValues(typeof(textureTypes)).Length / 2) + 1; float decalage = 0.3F;
+        float binoM;
         for (int x = 0; x < width; x++)
         {
             float caveNoise = Mathf.RoundToInt(Mathf.PerlinNoise(x / (smoothness / 4), seed) * 50);
@@ -92,192 +111,40 @@ public class GenerationProcedurale : MonoBehaviour
             float underGroundTH = (height / 4) + caveNoise;
             for (int y = 0; y < perlinHeight; y++)
             {
-                float coefAvenir = (Mathf.PerlinNoise((x * modifier + seed) * 0.75F, (y * modifier + seed) * 0.75F));
+                float coefAvenir = (Mathf.PerlinNoise((x*modifier+seed)*0.75F, (y*modifier+seed) * 0.75F));
+                UnityEngine.Debug.Log(coefAvenir);
                 if (map[x, y] == textureTypes.TERRE)
                 {
-                    map[x, y] = (underGroundTH > y) ? (coefAvenir > 0.3) ? textureTypes.PIERRE : textureTypes.TERRE : (coefAvenir < 0.3) ? textureTypes.PIERRE : textureTypes.TERRE;
+                    if (underGroundTH > y)
+                    {
+                        if (coefAvenir > 0.3)
+                        {
+                            map[x, y] = textureTypes.PIERRE;
+                        }
+                        else
+                        {
+                            map[x, y] = textureTypes.TERRE;
+                        }
+                    }
+                    else
+                    {
+                        if ((coefAvenir<0.3))
+                            map[x, y] = textureTypes.PIERRE;
+                        else
+                        {
+                            map[x, y] = textureTypes.TERRE;
+                        }
+                    }            
                 }
             }
         }
+        return map;
     }
 
-    public void generateTree(int angle, int largeur, int longueur, float reduction, int nbRecursion)
-    {
-        float newAngle = (float)angle * 0.001745F;
-        //tree spawns in the middle of the map
-        int milieu = this.width / 2;
+    public void RenderMap(textureTypes [,] map, Tilemap groundTileMap, Tilemap caveTilemap, TileBase rockTilebase,TileBase groundTilebase, TileBase caveTilebase, TileBase skyTilebase){
 
-        //same calculation as above to get the surface height in the middle of the map
-        int hauteur = Mathf.RoundToInt(Mathf.PerlinNoise(milieu / smoothness, seed) * height/2) + height /2;
-
-        int x = milieu; int y = hauteur;
-
-        //max height of the tree
-        int hauteurMax = hauteur + longueur*nbRecursion;
-
-        //tracing the trunk
-        while (x < (milieu + largeur))
-        {
-            y = hauteur;
-            while(y < hauteurMax)
-            {
-                map[x, y] = textureTypes.BOIS;
-                y++;
-            }
-            x++;
-        }
-
-        //reduction : float number that reduces at each iteration so that the tree branches get smaller
-        largeur = (int)((float)largeur * reduction);
-        longueur = (int)((float)longueur * reduction);
-
-        //nbRecursion == 0 is the end of recursivity condition
-        nbRecursion--;
-        leftTreeRecursion(1.57f + newAngle,largeur,longueur, reduction, nbRecursion , milieu, y, newAngle);
-        rightTreeRecursion(1.57f - newAngle, largeur, longueur, reduction, nbRecursion, milieu, y, newAngle);
-    }
-    public void leftTreeRecursion(float currentAngle, int largeur, int longueur, float reductionValue, int nbRecursion, int startingX, int startingY, float rotationAngle)
-    {
-        //put leaves at the end of branches
-        if (nbRecursion == 0)
-        {
-            map[startingX, startingY] = textureTypes.BOIS;
-            map[startingX, startingY + 1] = textureTypes.FEUILLE;
-            map[startingX + 1, startingY + 1] = textureTypes.FEUILLE;
-            map[startingX + 1, startingY] = textureTypes.FEUILLE;
-            map[startingX - 1, startingY + 1] = textureTypes.FEUILLE;
-            map[startingX - 1, startingY] = textureTypes.FEUILLE;
-            return;
-        }
-        if (nbRecursion >= 1)
-        {
-            float sX, sY; int x, y;
-            float finalY = (float)longueur * Mathf.Sin(currentAngle) + (float)startingY;
-            float finalX = (float)longueur * Mathf.Cos(currentAngle) + (float)startingX;
-            sX = (float)startingX;
-            sY = (float)startingY;
-            UnityEngine.Debug.Log("Coordonnées de départ : x" + sX + ", y " + sY + " Coordonnées d'arrivée : x " + finalX + ", y " + finalY);
-            for (int i = 0; i < largeur; i++)
-            {
-                bresenhamGeneral(sX-i, finalX-i, sY, finalY);
-            }
-            largeur = (int)(largeur * reductionValue);
-            longueur = (int)(longueur * reductionValue);
-            nbRecursion--;
-            x = Mathf.FloorToInt(finalX);
-            y = Mathf.FloorToInt(finalY);
-            leftTreeRecursion(currentAngle + rotationAngle, largeur, longueur, reductionValue, nbRecursion, x, y, rotationAngle);
-            rightTreeRecursion(currentAngle - rotationAngle, largeur, longueur, reductionValue, nbRecursion, x, y, rotationAngle);
-        }
-    }
-
-    public void rightTreeRecursion(float currentAngle, int largeur, int longueur, float reductionValue, int nbRecursion, int startingX, int startingY, float rotationAngle)
-    {
-        UnityEngine.Debug.Log("<color=green>On part à droite! </color>");
-        if (nbRecursion == 0)
-        {
-            map[startingX, startingY] = textureTypes.BOIS;
-            map[startingX, startingY + 1] = textureTypes.FEUILLE;
-            map[startingX + 1, startingY + 1] = textureTypes.FEUILLE;
-            map[startingX + 1, startingY] = textureTypes.FEUILLE;
-            map[startingX - 1, startingY + 1] = textureTypes.FEUILLE;
-            map[startingX - 1, startingY] = textureTypes.FEUILLE;
-            return;
-        }
-        if (nbRecursion >= 1)
-        {
-            float sX, sY; int x, y;
-            float finalY = (float)longueur * Mathf.Sin(currentAngle) + (float)startingY;
-            float finalX = (float)longueur* Mathf.Cos(currentAngle) + (float)startingX;
-            sX = (float)startingX;
-            sY = (float)startingY;
-            UnityEngine.Debug.Log("Coordonnées de départ : x" + sX + ", y " + sY + " Coordonnées d'arrivée : x " + finalX + ", y " + finalY);
-            for (int i = 0; i < largeur; i++)
-            {
-                bresenhamGeneral(sX + i, finalX + i, sY, finalY);
-            }
-            largeur = (int)(largeur * reductionValue);
-            longueur = (int)(longueur * reductionValue);
-            nbRecursion--;
-            x = Mathf.FloorToInt(finalX);
-            y = Mathf.FloorToInt(finalY);
-            leftTreeRecursion(currentAngle + rotationAngle, largeur, longueur, reductionValue, nbRecursion, x, y, rotationAngle);
-            rightTreeRecursion(currentAngle - rotationAngle, largeur, longueur, reductionValue, nbRecursion, x, y, rotationAngle);
-        }
-    }
-    public void bresenham(float x1, float x2, float y1, float y2, float IncrX, float IncrY, float dx, float dy, bool inversion)
-    {
-        float IncreE = 2 * dy;
-        float IncreNE = 2 * (dy - dx);
-        float dp = 2 * (dy - dx);
-        float y = y1;
-        int abcisse, ordonnee;
-
-        for (float x = x1; x != x2; x += IncrX)
-        {
-            abcisse = (int)(x);
-            ordonnee = (int)(y);
-            if (inversion) map[abcisse, ordonnee] = textureTypes.BOIS;
-            else map[ordonnee, abcisse]= textureTypes.BOIS;
-            if (dp <= 0)
-            {
-                dp += IncreE;
-            }
-            else
-            {
-                y += IncrY;
-                dp += IncreNE;
-            }
-        }
-    }
-
-
-    public void bresenhamGeneral(float x1, float x2, float y1, float y2)
-    {
-        /*
-        We only keep the integer part of the coordinates to avoid in loop issue.
-        */
-        x1 = Mathf.Floor(x1);
-        x2 = Mathf.Floor(x2);
-        y1 = Mathf.Floor(y1);
-        y2 = Mathf.Floor(y2);
-        float dy = y2 - y1;
-        float dx = x2 - x1;
-        float Incry, Incrx;
-        if (dx > 0)
-        {
-            Incrx = 1f;
-        }
-        else
-        {
-            Incrx = -1f;
-            dx = -dx;
-        }
-        if (dy > 0)
-        {
-            Incry = 1f;
-        }
-        else
-        {
-            dy = -dy;
-            Incry = -1f;
-        }
-        if (dx >= dy)
-        {
-            bresenham(x1, x2, y1, y2, Incrx, Incry, dx, dy, true);
-        }
-        else
-        {
-
-            bresenham(y1, y2, x1, x2, Incry, Incrx, dy, dx, false);
-        }
-    }
-    public void RenderMap(textureTypes[,] map, Tilemap groundTileMap, Tilemap caveTilemap, TileBase rockTilebase, TileBase groundTilebase, TileBase caveTilebase, TileBase skyTilebase, TileBase woodTile, TileBase leaveTile)
-    {
-        for (int x = 0; x < width; x++)
-        {
-            for (int y = 0; y < height; y++)
-            {
+        for(int x=0; x<width; x++){
+            for (int y=0; y<height; y++){
                 switch (map[x, y])
                 {
                     case textureTypes.CIEL:
@@ -290,19 +157,14 @@ public class GenerationProcedurale : MonoBehaviour
                         caveTilemap.SetTile(new Vector3Int(x, y, 0), caveTilebase);
                         break;
                     case textureTypes.PIERRE:
-                        groundTileMap.SetTile(new Vector3Int(x, y, 0), rockTilebase);
-                        break;
-                    case textureTypes.BOIS:
-                        groundTileMap.SetTile(new Vector3Int(x,y,0), woodTile);
-                        break;
-                    case textureTypes.FEUILLE:
-                        groundTileMap.SetTile(new Vector3Int(x,y,0), leaveTile);
+                        groundTileMap.SetTile(new Vector3Int(x,y,0), rockTilebase);
                         break;
                     default: break;
                 }
             }
         }
     }
+
     void clearMap()
     {
         groundTilemap.ClearAllTiles();
