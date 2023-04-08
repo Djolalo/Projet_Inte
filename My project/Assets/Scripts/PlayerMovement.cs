@@ -27,7 +27,7 @@ public class PlayerMovement : MonoBehaviour
             this.MaxVelY += 1;
         }
         else if(isGrounded){
-            if(MaxVelY > 1000 && Time.time > 2.0f){
+            if(MaxVelY > 100 && Time.time > 2.0f){
                 int damage = (int)MaxVelY/30;
                 Debug.Log("Chute " + MaxVelY);
                 ph.TakeDamage(damage); 

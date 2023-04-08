@@ -254,18 +254,6 @@ TextureImporter:
     overridden: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 3
-    buildTarget: Android
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 0
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
@@ -1304,8 +1292,8 @@ TextureImporter:
       Grass Tileset (1)_43: -8646567885763371781
       Grass Tileset (1)_13: -7110079754439611664
       Grass Tileset (1)_20: -2915045299263218829
-      Grass Tileset (1)_42: 965809563693957571
       Grass Tileset (1)_22: -1064247732838028689
+      Grass Tileset (1)_42: 965809563693957571
       Grass Tileset (1)_9: 3482140882886328024
       Grass Tileset (1)_10: -879808620329312906
       Grass Tileset (1)_7: -9139939379635935689
