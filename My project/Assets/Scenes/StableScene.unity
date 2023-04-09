@@ -570,19 +570,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a52bfbbaa2b41cb46b15ed761ba78831, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 100
-  height: 100
-  smoothness: 200
+  width: 400
+  height: 1000
+  smoothness: 400
   seed: 0
   groundTile: {fileID: 11400000, guid: 35efb5c6263a94740b82bc3c114e7133, type: 2}
   caveTile: {fileID: 11400000, guid: d4801f5099852ef45b0f9edbb99de53c, type: 2}
   rockTile: {fileID: 11400000, guid: 3518f19f86760cd4c9dd94436ae06993, type: 2}
   skyTile: {fileID: 11400000, guid: 7a126cf3ed2d3ba4685739ba5ccbe039, type: 2}
-  treeTile: {fileID: 0}
-  leaveTile: {fileID: 0}
+  treeTile: {fileID: 11400000, guid: 8a27c597779b4894f948c207449fde87, type: 2}
+  leaveTile: {fileID: 11400000, guid: 2300a9c843fbce649a1cab86d3b38550, type: 2}
   groundTilemap: {fileID: 1183983427}
   caveTilemap: {fileID: 1839468069}
-  worldname: 
+  worldname: patrix
   modifier: 0.1
 --- !u!4 &651083978
 Transform:
@@ -1151,7 +1151,7 @@ TilemapRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -234023109
   m_SortingLayer: 2
-  m_SortingOrder: 5
+  m_SortingOrder: 0
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
   m_MaxChunkCount: 16
@@ -1234,7 +1234,7 @@ MonoBehaviour:
     m_Mode: 0
     m_NumColorKeys: 8
     m_NumAlphaKeys: 2
-  l: {fileID: 0}
+  light: {fileID: 1412678832}
 --- !u!114 &1412678834
 MonoBehaviour:
   m_ObjectHideFlags: 0

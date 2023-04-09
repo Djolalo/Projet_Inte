@@ -48,11 +48,6 @@ public class GenerationProcedurale : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (UnityEngine.Input.GetKeyDown(KeyCode.Space))
-        {
-            this.seed = UnityEngine.Random.Range(-10000, 10000);
-            Generation();
-        }
         if (UnityEngine.Input.GetKeyDown(KeyCode.Y) && count == 40)
         {
             count++;
@@ -491,12 +486,6 @@ public class GenerationProcedurale : MonoBehaviour
         await Task.Run(() =>
         {
             System.IO.File.WriteAllBytes(path + "\\" + this.worldname + ".mnd", compressedData);
-        });
-
-        // Start a separate process to open a command prompt
-        await Task.Run(() =>
-        {
-            System.Diagnostics.Process.Start("CMD.exe", "I managed to save the file");
         });
     }
     void clearMap()
