@@ -1,5 +1,10 @@
 fileFormatVersion: 2
+<<<<<<<< Updated upstream:My project/Assets/GroundTilePackage.unitypackage.meta
 guid: 3978525cb730516488446a82664fdc9c
+========
+guid: 72c8eaa00284d984492596eb8926855b
+folderAsset: yes
+>>>>>>>> Stashed changes:My project/Assets/Shaders.meta
 DefaultImporter:
   externalObjects: {}
   userData: 

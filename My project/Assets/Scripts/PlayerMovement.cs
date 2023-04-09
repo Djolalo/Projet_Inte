@@ -27,7 +27,11 @@ public class PlayerMovement : MonoBehaviour
             this.MaxVelY += 1;
         }
         else if(isGrounded){
+<<<<<<< Updated upstream
             if(MaxVelY > 100 && Time.time > 2.0f){
+=======
+            if(MaxVelY > 500 && Time.time > 10.0f){
+>>>>>>> Stashed changes
                 int damage = (int)MaxVelY/30;
                 Debug.Log("Chute " + MaxVelY);
                 ph.TakeDamage(damage); 
