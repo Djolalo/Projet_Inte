@@ -56,13 +56,6 @@ public class GenerationProcedurale : MonoBehaviour
         if (UnityEngine.Input.GetKeyDown(KeyCode.R))
         {
             stringtoWholemap(ReadMap());
-<<<<<<< Updated upstream
-        }
-        if (UnityEngine.Input.GetKeyDown(KeyCode.C))
-        {
-            clearMap();
-=======
->>>>>>> Stashed changes
         }
     }
 
