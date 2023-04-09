@@ -61,11 +61,15 @@ public class GenerationProcedurale : MonoBehaviour
 
     void Generation()
     {
+        System.Random rnd = new System.Random();
         groundTilemap.ClearAllTiles();
+        this.height = PlayerPrefs.GetInt("Height");
+        this.width = PlayerPrefs.GetInt("Width");
+        this.seed = rnd.Next(0,100);
         this.map = GenerateArray(this.width, this.height, true);
         TerrainGeneration();
         ajoutPierres();
-        generateTree((int)seed, 1, 4, 1.0f, 15);
+        generateTree((int)seed, 1, PlayerPrefs.GetInt("tree"), 1.0f, 15);
         SaveMap();
         RenderMap(map, groundTilemap, caveTilemap, rockTile, groundTile, caveTile, skyTile, treeTile, leaveTile);
     }

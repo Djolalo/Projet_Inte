@@ -21,13 +21,17 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 velocity = Vector3.zero;
     private float MaxVelY;
 
+    void Start(){
+        transform.position = new Vector3((float)PlayerPrefs.GetInt("PlayerW"),(float)PlayerPrefs.GetInt("PlayerH"),0f);
+    }
+
     void Update(){
 
         if(!isGrounded){
             this.MaxVelY += 1;
         }
         else if(isGrounded){
-            if(MaxVelY > 600 && Time.time > 10.0f){
+            if(MaxVelY >= 700 && Time.time > 15.0f){
                 int damage = (int)MaxVelY/30;
                 Debug.Log("Chute " + MaxVelY);
                 ph.TakeDamage(damage); 
